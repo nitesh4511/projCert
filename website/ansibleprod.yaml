@@ -1,0 +1,8 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    env: "{{ env }}"
+    - name: Apply Kubernetes manifests for {{ env }}
+      command: >
+        kubectl apply -f prod.yaml
