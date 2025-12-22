@@ -35,7 +35,6 @@
         else
           echo "Inventory directory not found: {{ inventory_dir }}"
         fi
-      # Ensure shell commands don't fail silently
       register: inventory_output
       changed_when: "'created' in inventory_output.stdout or 'configured' in inventory_output.stdout"
 
