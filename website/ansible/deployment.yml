@@ -35,11 +35,10 @@
       changed_when: "'created' in inventory_output.stdout or 'configured' in inventory_output.stdout"
 
     - name: Apply Kubernetes manifests
-      kubernetes.core.k8s:
-        state: present
-        namespace: "{{ namespace }}"
-        src: "{{ item }}"
-      with_fileglob:
-        - "{{ k8s_dir }}/*.yaml"
+      ansible.builtin.shell: |
+        set -e
+        kubectl apply -n {{ namespace }} -f k8s/
+      args:
+        chdir: "{{ playbook_dir }}/content/envs/{{ target_env }}"
       register: k8s_output
       changed_when: "'created' in k8s_output.stdout or 'configured' in k8s_output.stdout"
