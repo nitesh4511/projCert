@@ -17,8 +17,7 @@
   tasks:
     - name: Show deployment parameters
       debug:
-        msg:
-          - "Environment: {{ target_env }}"
+        msg
           - "Namespace : {{ namespace }}"
           - "ENV_DIR   : {{ env_dir }}"
           - "Inventory : {{ inventory_dir }}"
@@ -27,12 +26,11 @@
           - "Region    : {{ aws_region }}"
 
     - name: Apply Kubernetes manifests
-      kubernetes.core.k8s:
-        state: present
-        namespace: "{{ namespace }}"
-        src: "{{ item }}"
-      with_fileglob:
-        - "{{ k8s_dir }}/*.yaml"
+      ansible.builtin.shell: |
+        set -e
+        kubectl apply -n {{ namespace }} -f k8s/
+      args:
+        chdir: "{{ playbook_dir }}/content/envs/{{ target_env }}"
       register: inventory_output
       changed_when: "'created' in inventory_output.stdout or 'configured' in inventory_output.stdout"
 
